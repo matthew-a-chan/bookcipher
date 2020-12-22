@@ -19,16 +19,12 @@ char2int = {char: ind for ind, char in int2char.items()}
 
 
 
-#create dataset here
-
-
-
 
 
 # =========================================== HYPERPARAMS =====================================================
 
 # number of samples
-batch_size = 1000
+batch_size = 10000
 
 #length of samples
 n = 30
@@ -46,13 +42,13 @@ lr=0.01
 
 
 
-text = dataloader.generate_text('inputs/war-peace.txt', 'inputs/war-peace.txt', num_samples=batch_size, length=n, randomoffset=10000)
-
+text = dataloader.generate_text('inputs/war-peace.txt', 'inputs/war-peace.txt', num_samples=batch_size, length=n, randomoffset=3000000)
+print('loaded text')
 
 # Creating lists that will hold our input and target sequences
 
-text = [(a, b, ''.join(computexorstream(a,b))) for (a,b) in text]
-
+text = ((a, b, ''.join(computexorstream(a,b))) for (a,b) in text)
+print('computed cipher')
 
 input_seq_c = []
 target_seq_c = []
@@ -60,29 +56,26 @@ known_data_c = []
 
 
 
-for i in range(len(text)):
-    
+for sample in text:
+    # print(sample)
     # 1 characters of cipher maps to 1 characters of message
-    input_seq_c.append(([text[i][2][-1]]))
-    target_seq_c.append(([text[i][0][-1]]))
+    input_seq_c.append(([sample[2][-1]]))
+    target_seq_c.append(([sample[0][-1]]))
 
     # n-1 characters of message, n-1 characters of key, n-1 characters of cipher
-    known_data_c.append((text[i][0][:-1], text[i][1][:-1], text[i][2][:-1]))
+    known_data_c.append((sample[0][:-1], sample[1][:-1], sample[2][:-1]))
 
 # print(f'input seq: {input_seq_c}')
 # print(f'target seq: {target_seq_c}')
 # print(f'known data: {known_data_c}')
 
 
-input_seq = []
-target_seq = []
-known_data = []
+print('stripped text')
 
 
-for i in range(len(text)):
-    input_seq.append([char2int[character] for character in input_seq_c[i]])
-    target_seq.append([char2int[character] for character in target_seq_c[i]])
-    known_data.append([[char2int[character] for character in seq] for seq in known_data_c[i]])
+input_seq = [[char2int[character] for character in input_seq] for input_seq in input_seq_c]
+target_seq = [[char2int[character] for character in target_seq] for target_seq in target_seq_c]
+known_data = [[[char2int[character] for character in seq] for seq in known_data] for known_data in known_data_c]
 
 
 # print(f'input seq: {input_seq}')
@@ -91,7 +84,7 @@ for i in range(len(text)):
 
 
 
-
+print('Converted text')
 
 
 
