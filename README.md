@@ -15,9 +15,9 @@ while still only having knowledge about the first N-1 indices.
 # Example: Known start
 Say that the cipher text C is known, and the first N letters of the message M are known.
 
-C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`
-M = `theweatherreporttodaywillbesunnyinothernews------------------`
-K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq------------------`
+C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`<br/>
+M = `theweatherreporttodaywillbesunnyinothernews------------------`<br/>
+K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq------------------`<br/>
 
 itisalmostnewyears
 
@@ -28,21 +28,21 @@ Given the first 43 characters, the current iteration of the program can decrypt 
 recovering M[44] = i, and K[44] = r.
 We can then update our knowledge base:
 
-C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`
-M = `theweatherreporttodaywillbesunnyinothernewsi-----------------`
-K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr-----------------`
+C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`<br/>
+M = `theweatherreporttodaywillbesunnyinothernewsi-----------------`<br/>
+K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqr-----------------`<br/>
 
 Then we may recover M[45] = t, K[45] = s. Once again, we may update our knowledge base and iterate:
 
-C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`
-M = `theweatherreporttodaywillbesunnyinothernewsit----------------`
-K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs----------------`
+C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`<br/>
+M = `theweatherreporttodaywillbesunnyinothernewsit----------------`<br/>
+K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs----------------`<br/>
 
 By repeated application, we may eventually decrypt the entire stream to find that our message and key decrypt as follows!
 
-C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`
-M = `theweatherreporttodaywillbesunnyinothernewsitisalmostnewyears`
-K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi`
+C = `tigzifzomabpbbfijfvtsreijaetwqrdouwcrpdaslizlbmvhjmrtogzcjgya`<br/>
+M = `theweatherreporttodaywillbesunnyinothernewsitisalmostnewyears`<br/>
+K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi`<br/>
 
 Woohoo! we have decrypted the entire message, given only the start, and little knowledge of the key or message 
 (and no knowledge of the parts we are decrypting)
