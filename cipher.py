@@ -45,6 +45,9 @@ if __name__ == '__main__':
     for i in range(0, offset):
         next(bookchars, None)
 
-    book = ''.join(bookcipher(messagechars=messagechars, cipherchars=cipherchars))
+    messagechars = 'theweatherreporttodaywillbesunnyinothernewsitisalmostnewyears'
+    bookchars =    'abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi'
 
-    print(book, offset)
+    cipher = ''.join(bookcipher(messagechars=messagechars, bookchars=bookchars))
+
+    print(cipher, offset)
