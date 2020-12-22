@@ -53,3 +53,7 @@ I'm currently working on creating encodings that would remove this dependency,
 thought the amount of data required to accurately model this is quite large,
 and my computer is quite small. I anticipate that I will be able to do this, but the
 simple "throw more data at it" idea won't work for me so I will have to come up with a better solution.
+
+Another possible problem is that the program gets 'lost'. Given the nature of the problem, if the algorithm
+makes a big enough mistake somewhere in the middle, everything after that will be garbage. We'll also need
+to protect against noise (ie: the algorithm makes a small mistake, but recovers, or perhaps the message has a tpyo in it)
