@@ -4,6 +4,7 @@ import numpy as np
 
 
 from cipher import computexorstream
+import dataloader
 
 
 
@@ -16,15 +17,39 @@ int2char = dict(enumerate(alphabet))
 # Creating another dictionary that maps characters to integers
 char2int = {char: ind for ind, char in int2char.items()}
 
-print(int2char)
 
 
 #create dataset here
 
 
 
+
+
+# =========================================== HYPERPARAMS =====================================================
+
+# number of samples
+batch_size = 1000
+
+#length of samples
+n = 30
+known_len = 29
+prediction_len = n - known_len
+
+dict_size = len(alphabet)
+
+
+
+n_epochs = 500
+lr=0.01
+
+
+
+
+
+text = dataloader.generate_text('inputs/war-peace.txt', 'inputs/war-peace.txt', num_samples=batch_size, length=n, randomoffset=10000)
+
+
 # Creating lists that will hold our input and target sequences
-text = [('tobeornottobethatisthequestion', 'todietosleepnomoreandbyasleept'), ('abcdefghijklmnopqrstuvwxyzabcd', 'abcdefghijklmnopqrstuvwxyzabcd')]
 
 text = [(a, b, ''.join(computexorstream(a,b))) for (a,b) in text]
 
@@ -37,16 +62,16 @@ known_data_c = []
 
 for i in range(len(text)):
     
-    # 1 characters of cipher maps to 1 characters of key (book)
+    # 1 characters of cipher maps to 1 characters of message
     input_seq_c.append(([text[i][2][-1]]))
-    target_seq_c.append(([text[i][1][-1]]))
+    target_seq_c.append(([text[i][0][-1]]))
 
     # n-1 characters of message, n-1 characters of key, n-1 characters of cipher
     known_data_c.append((text[i][0][:-1], text[i][1][:-1], text[i][2][:-1]))
 
-print(f'input seq: {input_seq_c}')
-print(f'target seq: {target_seq_c}')
-print(f'known data: {known_data_c}')
+# print(f'input seq: {input_seq_c}')
+# print(f'target seq: {target_seq_c}')
+# print(f'known data: {known_data_c}')
 
 
 input_seq = []
@@ -60,9 +85,9 @@ for i in range(len(text)):
     known_data.append([[char2int[character] for character in seq] for seq in known_data_c[i]])
 
 
-print(f'input seq: {input_seq}')
-print(f'target seq: {target_seq}')
-print(f'known data: {known_data}')
+# print(f'input seq: {input_seq}')
+# print(f'target seq: {target_seq}')
+# print(f'known data: {known_data}')
 
 
 
@@ -87,25 +112,13 @@ def one_hot_encode_known(sequence, dict_size, seq_len, batch_size=1):
     for i in range(batch_size):
         for k in range(0, inputs):
             for j in range(seq_len):
-                features[i, j, k*batch_size + sequence[i][k][j]] = 1
+                features[i, j, k*dict_size + sequence[i][k][j]] = 1
     return features
 
 
 
 
 
-
-
-
-# =========================================== HYPERPARAMS =====================================================
-
-
-n = 30
-known_len = 29
-prediction_len = n - known_len
-
-dict_size = len(alphabet)
-batch_size = 2
 
 
 
@@ -188,9 +201,7 @@ model = Model(input_size=dict_size, output_size=dict_size, hidden_dim=12, n_laye
 # We'll also set the model to the device that we defined earlier (default is CPU)
 model.to(device)
 
-# Define hyperparameters
-n_epochs = 100
-lr=0.01
+
 
 # Define Loss, Optimizer
 criterion = nn.CrossEntropyLoss()
@@ -204,8 +215,6 @@ for epoch in range(1, n_epochs + 1):
     input_seq.to(device)
     known_data.to(device)
     output = model(input_seq, known_data)
-    print(output)
-    print(target_seq)
     target_seq = target_seq.view(-1).long()
     loss = criterion(output, target_seq)
     loss.backward() # Does backpropagation and calculates gradients
@@ -214,7 +223,6 @@ for epoch in range(1, n_epochs + 1):
     if epoch%10 == 0:
         print('Epoch: {}/{}.............'.format(epoch, n_epochs), end=' ')
         print("Loss: {:.4f}".format(loss.item()))
-
 
 
 
@@ -264,9 +272,17 @@ def sample(model, character, known_data):
 
 
 
-print(sample(model, input_seq_c[0], [known_data_c[0]]))
-print(sample(model, input_seq_c[1], [known_data_c[1]]))
+incorrect = 0
+for i in range(0, batch_size):
+    if target_seq_c[i][0] != sample(model, input_seq_c[i], [known_data_c[i]]):
+        incorrect += 1
 
+print ("Training validation accuracy:")
+print (1 - incorrect / batch_size)
+
+
+
+# must do unseen validation as well
 
 
 

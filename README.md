@@ -47,6 +47,12 @@ K = `abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghi`<br/>
 Woohoo! we have decrypted the entire message, given only the start, and little knowledge of the key or message 
 (and no knowledge of the parts we are decrypting)
 
+# Results:
+With the current iteration of "Known start" technique, we're able to successfully decrypt with **accuracy > 98%** of characters. 
+This is given barely over 1 minute of training time, obviously more training would lead to more accurate models.
+Given the caveats (especially the chance of randomly missing and getting lost), I believe this number must be improved, to ensure
+that the repeated application of this algorithm may work smoothly.
+
 # Caveats:
 It's obvious that we may not always be able to know the first N letters of the message.
 I'm currently working on creating encodings that would remove this dependency,
@@ -57,3 +63,5 @@ simple "throw more data at it" idea won't work for me so I will have to come up 
 Another possible problem is that the program gets 'lost'. Given the nature of the problem, if the algorithm
 makes a big enough mistake somewhere in the middle, everything after that will be garbage. We'll also need
 to protect against noise (ie: the algorithm makes a small mistake, but recovers, or perhaps the message has a tpyo in it)
+
+
